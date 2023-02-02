@@ -1,0 +1,108 @@
+%implements s2_b0_ysdyb_Outputs "C"
+
+%function Outputs(block, system) Output
+%assign cfgTxt = ""
+%openfile cfgTxt
+%assign localVarDecl = ""
+%openfile localVarDecl
+
+real_T NumCreneau;
+real_T PosDansCreneau;
+real_T rtb_Clock;
+real_T rtb_SwitchAct;
+real_T tmp;
+int32_T sens;
+%closefile localVarDecl
+%<SLibCG_TrackEO(0)>\
+%<SLibCG_TrackEI(0)>\
+/* {S!d610}Clock: '<Root>/Clock' */
+rtb_Clock = %<(SLibCG_SE(LibGetT()))>;
+/* {S!d612}RelationalOperator: '<S1>/Compare' incorporates:
+ *  Abs: '<Root>/Abs'
+ *  Constant: '<S1>/Constant'
+ *  Inport: '<Root>/Lateral Shift'
+ */
+LaneKeeping_B.Compare = (uint8_T)(fabs(LaneKeeping_U.LateralShift) > LaneKeeping_P.CompareToConstant_const);
+/* {S!d614}UnitDelay: '<S4>/Delay Input1' */
+LaneKeeping_B.Uk1 = LaneKeeping_DW.DelayInput1_DSTATE;
+/* {S!d616}Switch: '<S2>/SwitchAct' incorporates:
+ *  DataStoreRead: '<S2>/ReadTime'
+ *  RelationalOperator: '<S4>/FixPt Relational Operator'
+ */
+if ((LaneKeeping_B.Compare > LaneKeeping_B.Uk1) >= LaneKeeping_P.SwitchAct_Threshold) {
+    rtb_SwitchAct = rtb_Clock;
+} else {
+    rtb_SwitchAct = LaneKeeping_DW.Time;
+}
+/* {E!d616}End of Switch: '<S2>/SwitchAct' */
+
+/* {S!d618}DataStoreWrite: '<S2>/WriteTime' */
+LaneKeeping_DW.Time = rtb_SwitchAct;
+/* {S!d626}MATLAB Function: '<Root>/Embedded MATLAB Function' incorporates:
+ *  Constant: '<Root>/DownDuration'
+ *  Constant: '<Root>/ShockCount'
+ *  Constant: '<Root>/UpDuration'
+ *  Inport: '<Root>/Lateral Shift'
+ */
+/* MATLAB Function 'Embedded MATLAB Function': '<S3>:1' */
+/* '<S3>:1:5' */
+NumCreneau = 0.0;
+/* '<S3>:1:6' */
+PosDansCreneau = 0.0;
+tmp = LaneKeeping_P.UpDuration_Value + LaneKeeping_P.DownDuration_Value;
+if (tmp > 0.0) {
+    /* '<S3>:1:7' */
+    /* '<S3>:1:8' */
+    rtb_Clock -= rtb_SwitchAct;
+    NumCreneau = floor(rtb_Clock / tmp) * 2.0;
+    /* '<S3>:1:9' */
+    PosDansCreneau = %<(SLibCGCallSubFcn("rt_remd_snf", ["rtb_Clock", "tmp"], 0, 3, 0))>;
+}
+if (PosDansCreneau >= LaneKeeping_P.UpDuration_Value) {
+    /* '<S3>:1:12' */
+    /* '<S3>:1:13' */
+    NumCreneau++;
+}
+if (LaneKeeping_U.LateralShift > 0.0) {
+    /* '<S3>:1:16' */
+    /* '<S3>:1:17' */
+    sens = 1;
+} else {
+    /* '<S3>:1:19' */
+    sens = -1;
+}
+if ((LaneKeeping_B.Compare == 1) && ((LaneKeeping_P.ShockCount_Value == 0.0) || (NumCreneau < LaneKeeping_P.ShockCount_Value))) {
+    /* '<S3>:1:22' */
+    if (PosDansCreneau < LaneKeeping_P.UpDuration_Value) {
+        /* {S!d620}Outport: '<Root>/Additinal Torque' incorporates:
+ *  Constant: '<Root>/UpTorque'
+ */
+        /* '<S3>:1:23' */
+        /* '<S3>:1:24' */
+        LaneKeeping_Y.AdditinalTorque = (real_T)sens * LaneKeeping_P.UpTorque_Value;
+    } else {
+        /* {S!d622}Outport: '<Root>/Additinal Torque' incorporates:
+ *  Constant: '<Root>/DownTorque'
+ */
+        /* '<S3>:1:26' */
+        LaneKeeping_Y.AdditinalTorque = -(real_T)sens * LaneKeeping_P.DownTorque_Value;
+    }
+} else {
+    /* {S!d624}Outport: '<Root>/Additinal Torque' */
+    /* '<S3>:1:29' */
+    LaneKeeping_Y.AdditinalTorque = 0.0;
+}
+/* {E!d626}End of MATLAB Function: '<Root>/Embedded MATLAB Function' */
+%<SLibInsertSolverResetCode()>\
+%closefile cfgTxt
+%<cfgTxt>
+%<LibSetSystemField(system, "CachedOutputLocalVars", localVarDecl)>
+%endfunction
+%function OutputsFcnProtoType(block, system) Output
+%assign fcnProtoType = ""
+%openfile fcnProtoType
+static void Outputs(\
+%assign comma = ""
+%closefile fcnProtoType
+%<SLibCG_SetFcnProtoType(0, 3, fcnProtoType)>
+%endfunction
