@@ -1,0 +1,11 @@
+ 
+Compiling and linking the model (Visual C++). 
+ 
+64-bit mode activated. 
+"Restoring current directory for VS 2107" 
+dsmodel.c
+dsmodel.c(50509): warning C4267: 'function': conversion from 'size_t' to 'int', possible loss of data
+   Creating library dymosim.lib and object dymosim.exp
+ 
+Successful generation of Dymosim. 
+ 

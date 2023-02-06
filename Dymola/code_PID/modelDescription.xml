@@ -1,0 +1,2733 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fmiModelDescription
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  fmiVersion="2.0"
+  modelName="Blocks.Examples.PID_Controller"
+  guid="{2d8da1d3-e6a1-4ab3-a7c9-049ce1d93958}"
+  description="Demonstrates the usage of a Continuous.LimPID controller"
+  generationTool="Dymola Version 2023x, 2022-10-07"
+  generationDateAndTime="2023-02-06T05:30:33Z"
+  variableNamingConvention="structured"
+  numberOfEventIndicators="4">
+  <ModelExchange
+    modelIdentifier="Blocks_Examples_PID_0Controller"
+    completedIntegratorStepNotNeeded="true"
+    canNotUseMemoryManagementFunctions="true"
+    canGetAndSetFMUstate="true"
+    canSerializeFMUstate="true"
+    providesDirectionalDerivative="true"/>
+  <CoSimulation
+    modelIdentifier="Blocks_Examples_PID_0Controller"
+    canHandleVariableCommunicationStepSize="true"
+    canInterpolateInputs="true"
+    maxOutputDerivativeOrder="1"
+    canNotUseMemoryManagementFunctions="true"
+    canGetAndSetFMUstate="true"
+    canSerializeFMUstate="true"
+    providesDirectionalDerivative="true"/>
+  <UnitDefinitions>
+    <Unit
+      name="1"/>
+    <Unit
+      name="N.m">
+      <BaseUnit kg="1"
+        m="2"
+        s="-2"/>
+    </Unit>
+    <Unit
+      name="N.m.s/rad">
+      <BaseUnit kg="1"
+        m="2"
+        s="-1"
+        rad="-1"/>
+    </Unit>
+    <Unit
+      name="N.m/rad">
+      <BaseUnit kg="1"
+        m="2"
+        s="-2"
+        rad="-1"/>
+    </Unit>
+    <Unit
+      name="W">
+      <BaseUnit kg="1"
+        m="2"
+        s="-3"/>
+    </Unit>
+    <Unit
+      name="kg.m2">
+      <BaseUnit kg="1"
+        m="2"/>
+    </Unit>
+    <Unit
+      name="rad">
+      <BaseUnit rad="1"/>
+      <DisplayUnit
+        name="deg"
+        factor="57.29577951308232"/>
+      <DisplayUnit
+        name="rad"/>
+    </Unit>
+    <Unit
+      name="rad/s">
+      <BaseUnit s="-1"
+        rad="1"/>
+    </Unit>
+    <Unit
+      name="rad/s2">
+      <BaseUnit s="-2"
+        rad="1"/>
+    </Unit>
+    <Unit
+      name="s">
+      <BaseUnit s="1"/>
+    </Unit>
+  </UnitDefinitions>
+  <TypeDefinitions>
+    <SimpleType
+      name="Blocks.Types.Init">
+      <Enumeration>
+        <Item name="NoInit"
+          value="1"
+          description="No initialization (start values are used as guess values with fixed=false)"/>
+        <Item name="SteadyState"
+          value="2"
+          description="Steady state initialization (derivatives of states are zero)"/>
+        <Item name="InitialState"
+          value="3"
+          description="Initialization with initial states"/>
+        <Item name="InitialOutput"
+          value="4"
+          description="Initialization with initial outputs (and steady state of the states if possible)"/>
+      </Enumeration>
+    </SimpleType>
+    <SimpleType
+      name="Blocks.Types.LimiterHomotopy">
+      <Enumeration>
+        <Item name="NoHomotopy"
+          value="1"
+          description="Homotopy is not used"/>
+        <Item name="Linear"
+          value="2"
+          description="Simplified model without limits"/>
+        <Item name="UpperLimit"
+          value="3"
+          description="Simplified model fixed at upper limit"/>
+        <Item name="LowerLimit"
+          value="4"
+          description="Simplified model fixed at lower limit"/>
+      </Enumeration>
+    </SimpleType>
+    <SimpleType
+      name="Blocks.Types.SimpleController">
+      <Enumeration>
+        <Item name="P"
+          value="1"
+          description="P controller"/>
+        <Item name="PI"
+          value="2"
+          description="PI controller"/>
+        <Item name="PD"
+          value="3"
+          description="PD controller"/>
+        <Item name="PID"
+          value="4"
+          description="PID controller"/>
+      </Enumeration>
+    </SimpleType>
+  </TypeDefinitions>
+  <DefaultExperiment startTime="0.0"
+    stopTime="4.0"
+    tolerance="0.0001"/>
+  <VendorAnnotations>
+    <Tool
+      name="Dymola">
+      <EquationBlocks>
+        <Data
+          id="0"
+          kind="simple scalar"
+          equation="kinematicPTP.sdd = (if time &lt; kinematicPTP.startTime then 0 else (if kinematicPTP.noWphase then (if time &lt; kinematicPTP.Ta1+kinematicPTP.startTime then kinematicPTP.sdd_max else (if time &lt; kinematicPTP.Te+kinematicPTP.startTime then  -kinematicPTP.sdd_max else 0)) else (if time &lt; kinematicPTP.Ta2+kinematicPTP.startTime then kinematicPTP.sdd_max else (if time &lt; kinematicPTP.Tv+kinematicPTP.startTime then 0 else (if time &lt; kinematicPTP.Te+kinematicPTP.startTime then  -kinematicPTP.sdd_max else 0))))); "
+          dependencies="1"
+          unknowns="132"
+          iteration=""/>
+        <Data
+          id="1"
+          kind="simple scalar"
+          equation="kinematicPTP.y[1] = kinematicPTP.sdd*kinematicPTP.p_deltaq[1]; "
+          dependencies="132"
+          unknowns="126"
+          iteration=""/>
+        <Data
+          id="2"
+          kind="simple scalar"
+          equation="der(integrator.y) = integrator.k*integrator.u; "
+          dependencies="126"
+          unknowns="145"
+          iteration=""/>
+        <Data
+          id="3"
+          kind="simple scalar"
+          equation="PI.addP.y = PI.addP.k1*PI.addP.u1+PI.addP.k2*der(speedSensor.flange.phi); "
+          dependencies="87 144"
+          unknowns="27"
+          iteration=""/>
+        <Data
+          id="4"
+          kind="simple scalar"
+          equation="PI.P.y = PI.P.k*PI.P.u; "
+          dependencies="27"
+          unknowns="32"
+          iteration=""/>
+        <Data
+          id="5"
+          kind="simple scalar"
+          equation="PI.addPID.y = PI.addPID.k1*PI.addPID.u1+PI.addPID.k2*PI.addPID.u2+PI.addPID.k3*PI.addPID.u3; "
+          dependencies="32 63"
+          unknowns="34"
+          iteration=""/>
+        <Data
+          id="6"
+          kind="simple scalar"
+          equation="PI.gainPID.y = PI.gainPID.k*PI.gainPID.u; "
+          dependencies="34"
+          unknowns="35"
+          iteration=""/>
+        <Data
+          id="7"
+          kind="simple scalar"
+          equation="PI.addFF.y = PI.addFF.k1*PI.addFF.u1+PI.addFF.k2*PI.addFF.u2; "
+          dependencies="35"
+          unknowns="47"
+          iteration=""/>
+        <Data
+          id="8"
+          kind="simple scalar"
+          equation="PI.limiter.y = smooth(0, (if PI.limiter.u &gt; PI.limiter.uMax then PI.limiter.uMax else (if PI.limiter.u &lt; PI.limiter.uMin then PI.limiter.uMin else PI.limiter.u))); "
+          dependencies="47"
+          unknowns="5"
+          iteration=""/>
+        <Data
+          id="9"
+          kind="simple scalar"
+          equation="spring.tau_c = spring.c*(spring.phi_rel-spring.phi_rel0); "
+          dependencies="97"
+          unknowns="109"
+          iteration=""/>
+        <Data
+          id="10"
+          kind="simple scalar"
+          equation="spring.tau_d = spring.d*spring.w_rel; "
+          dependencies="99"
+          unknowns="110"
+          iteration=""/>
+        <Data
+          id="11"
+          kind="simple scalar"
+          equation="spring.tau = spring.tau_c+spring.tau_d; "
+          dependencies="109 110"
+          unknowns="83"
+          iteration=""/>
+        <Data
+          id="12"
+          kind="simple linear"
+          equation="inertia1.a = (inertia1.flange_a.tau+inertia1.flange_b.tau)/inertia1.J; "
+          dependencies="5 83"
+          unknowns="89"
+          iteration="89"/>
+        <Data
+          id="13"
+          kind="trivial"
+          equation="der(inertia1.w) = inertia1.a; "
+          dependencies="89"
+          unknowns="88"
+          iteration=""/>
+        <Data
+          id="14"
+          kind="simple linear"
+          equation="der(inertia2.w) = (inertia2.flange_b.tau-spring.tau)/inertia2.J; "
+          dependencies="83"
+          unknowns="119"
+          iteration="119"/>
+        <Data
+          id="15"
+          kind="simple scalar"
+          equation="der(spring.w_rel) = der(inertia2.w)-der(inertia1.w); "
+          dependencies="89 119"
+          unknowns="100"
+          iteration=""/>
+        <Data
+          id="16"
+          kind="trivial"
+          equation="der(spring.phi_rel) = spring.w_rel; "
+          dependencies="99"
+          unknowns="98"
+          iteration=""/>
+        <Data
+          id="17"
+          kind="trivial"
+          equation="der(inertia1.phi) = inertia1.w; "
+          dependencies="87"
+          unknowns="86"
+          iteration=""/>
+        <Data
+          id="18"
+          kind="simple scalar"
+          equation="PI.addSat.y = PI.addSat.k1*PI.addSat.u1+PI.addSat.k2*PI.addSat.u2; "
+          dependencies="5 47"
+          unknowns="74"
+          iteration=""/>
+        <Data
+          id="19"
+          kind="simple scalar"
+          equation="PI.gainTrack.y = PI.gainTrack.k*PI.gainTrack.u; "
+          dependencies="74"
+          unknowns="70"
+          iteration=""/>
+        <Data
+          id="20"
+          kind="simple scalar"
+          equation="PI.addI.y = PI.addI.k1*PI.addI.u1+PI.addI.k2*der(speedSensor.flange.phi)+PI.addI.k3*PI.addI.u3; "
+          dependencies="70 87 144"
+          unknowns="62"
+          iteration=""/>
+        <Data
+          id="21"
+          kind="simple scalar"
+          equation="der(PI.I.y) = PI.I.k*PI.I.u; "
+          dependencies="62"
+          unknowns="64"
+          iteration=""/>
+        <Data
+          id="22"
+          kind="simple scalar"
+          equation="inertia2.phi = spring.phi_rel+spring.flange_a.phi; "
+          dependencies="85 97"
+          unknowns="116"
+          iteration=""/>
+        <Data
+          id="23"
+          kind="simple scalar"
+          equation="inertia2.w = spring.w_rel+inertia1.w; "
+          dependencies="87 99"
+          unknowns="118"
+          iteration=""/>
+        <Data
+          id="24"
+          kind="simple scalar"
+          equation="PI.controlError = PI.u_s-der(speedSensor.flange.phi); "
+          dependencies="87 144"
+          unknowns="6"
+          iteration=""/>
+        <Data
+          id="25"
+          kind="simple scalar"
+          equation="spring.lossPower = spring.tau_d*spring.w_rel; "
+          dependencies="99 110"
+          unknowns="108"
+          iteration=""/>
+        <Data
+          id="26"
+          kind="trivial"
+          equation="PI.Dzero.y = PI.Dzero.k; "
+          dependencies=""
+          unknowns="51"
+          iteration=""/>
+        <Data
+          id="27"
+          kind="trivial"
+          equation="PI.FFzero.y = PI.FFzero.k; "
+          dependencies=""
+          unknowns="53"
+          iteration=""/>
+        <Data
+          id="28"
+          kind="trivial"
+          equation="PI.addFF.u2 = PI.FFzero.k; "
+          dependencies=""
+          unknowns="55"
+          iteration=""/>
+        <Data
+          id="29"
+          kind="trivial"
+          equation="PI.addI.u1 = integrator.y; "
+          dependencies="144"
+          unknowns="68"
+          iteration=""/>
+        <Data
+          id="30"
+          kind="simple scalar"
+          equation="PI.addI.u2 = der(speedSensor.flange.phi); "
+          dependencies="87"
+          unknowns="69"
+          iteration=""/>
+        <Data
+          id="31"
+          kind="trivial"
+          equation="PI.addP.u1 = integrator.y; "
+          dependencies="144"
+          unknowns="25"
+          iteration=""/>
+        <Data
+          id="32"
+          kind="simple scalar"
+          equation="PI.addP.u2 = der(speedSensor.flange.phi); "
+          dependencies="87"
+          unknowns="26"
+          iteration=""/>
+        <Data
+          id="33"
+          kind="trivial"
+          equation="PI.addPID.u2 = PI.Dzero.k; "
+          dependencies=""
+          unknowns="40"
+          iteration=""/>
+        <Data
+          id="34"
+          kind="trivial"
+          equation="PI.addPID.u3 = PI.I.y; "
+          dependencies="63"
+          unknowns="41"
+          iteration=""/>
+        <Data
+          id="35"
+          kind="simple scalar"
+          equation="PI.u_m = der(speedSensor.flange.phi); "
+          dependencies="87"
+          unknowns="4"
+          iteration=""/>
+        <Data
+          id="36"
+          kind="trivial"
+          equation="PI.u_s = integrator.y; "
+          dependencies="144"
+          unknowns="3"
+          iteration=""/>
+        <Data
+          id="37"
+          kind="trivial"
+          equation="der(speedSensor.flange.phi) = inertia1.w; "
+          dependencies="87"
+          unknowns="147"
+          iteration=""/>
+        <Data
+          id="38"
+          kind="trivial"
+          equation="inertia1.flange_a.phi = inertia1.phi; "
+          dependencies="85"
+          unknowns="80"
+          iteration=""/>
+        <Data
+          id="39"
+          kind="trivial"
+          equation="inertia1.flange_b.phi = inertia1.phi; "
+          dependencies="85"
+          unknowns="82"
+          iteration=""/>
+        <Data
+          id="40"
+          kind="trivial"
+          equation="inertia2.flange_b.tau = loadTorque.tau_constant; "
+          dependencies=""
+          unknowns="114"
+          iteration=""/>
+        <Data
+          id="41"
+          kind="simple scalar"
+          equation="loadTorque.flange.tau = loadTorque.flange.tau; "
+          dependencies=""
+          unknowns="151"
+          iteration=""/>
+        <Data
+          id="42"
+          kind="trivial"
+          equation="loadTorque.tau = loadTorque.tau_constant; "
+          dependencies=""
+          unknowns="157"
+          iteration=""/>
+        <Data
+          id="43"
+          kind="trivial"
+          equation="speedSensor.flange.phi = inertia1.phi; "
+          dependencies="85"
+          unknowns="146"
+          iteration=""/>
+        <Data
+          id="44"
+          kind="simple scalar"
+          equation="speedSensor.w = der(speedSensor.flange.phi); "
+          dependencies="87"
+          unknowns="149"
+          iteration=""/>
+        <Data
+          id="45"
+          kind="trivial"
+          equation="spring.flange_a.phi = inertia1.phi; "
+          dependencies="85"
+          unknowns="103"
+          iteration=""/>
+        <Data
+          id="46"
+          kind="trivial"
+          equation="torque.flange.phi = inertia1.phi; "
+          dependencies="85"
+          unknowns="90"
+          iteration=""/>
+        <Data
+          id="47"
+          kind="trivial"
+          equation="PI.P.u = PI.addP.y; "
+          dependencies="27"
+          unknowns="31"
+          iteration=""/>
+        <Data
+          id="48"
+          kind="trivial"
+          equation="PI.addFF.u1 = PI.gainPID.y; "
+          dependencies="35"
+          unknowns="54"
+          iteration=""/>
+        <Data
+          id="49"
+          kind="trivial"
+          equation="PI.addFF.y = PI.limiter.u; "
+          dependencies="47"
+          unknowns="56"
+          iteration=""/>
+        <Data
+          id="50"
+          kind="trivial"
+          equation="PI.addI.y = PI.I.u; "
+          dependencies="62"
+          unknowns="71"
+          iteration=""/>
+        <Data
+          id="51"
+          kind="trivial"
+          equation="PI.addPID.u1 = PI.P.y; "
+          dependencies="32"
+          unknowns="39"
+          iteration=""/>
+        <Data
+          id="52"
+          kind="trivial"
+          equation="PI.addPID.y = PI.gainPID.u; "
+          dependencies="34"
+          unknowns="42"
+          iteration=""/>
+        <Data
+          id="53"
+          kind="trivial"
+          equation="PI.addSat.u1 = PI.y; "
+          dependencies="5"
+          unknowns="72"
+          iteration=""/>
+        <Data
+          id="54"
+          kind="trivial"
+          equation="PI.addSat.u2 = PI.limiter.u; "
+          dependencies="47"
+          unknowns="73"
+          iteration=""/>
+        <Data
+          id="55"
+          kind="trivial"
+          equation="PI.gainTrack.u = PI.addSat.y; "
+          dependencies="74"
+          unknowns="78"
+          iteration=""/>
+        <Data
+          id="56"
+          kind="trivial"
+          equation="PI.gainTrack.y = PI.addI.u3; "
+          dependencies="70"
+          unknowns="79"
+          iteration=""/>
+        <Data
+          id="57"
+          kind="trivial"
+          equation="PI.limiter.simplifiedExpr = PI.limiter.u; "
+          dependencies="47"
+          unknowns="49"
+          iteration=""/>
+        <Data
+          id="58"
+          kind="trivial"
+          equation="PI.limiter.y = PI.y; "
+          dependencies="5"
+          unknowns="48"
+          iteration=""/>
+        <Data
+          id="59"
+          kind="trivial"
+          equation="der(inertia2.phi) = inertia2.w; "
+          dependencies="118"
+          unknowns="117"
+          iteration=""/>
+        <Data
+          id="60"
+          kind="trivial"
+          equation="der(loadTorque.phi) = inertia2.w; "
+          dependencies="118"
+          unknowns="154"
+          iteration=""/>
+        <Data
+          id="61"
+          kind="trivial"
+          equation="inertia1.flange_a.tau = PI.y; "
+          dependencies="5"
+          unknowns="81"
+          iteration=""/>
+        <Data
+          id="62"
+          kind="trivial"
+          equation="inertia2.a = der(inertia2.w); "
+          dependencies="119"
+          unknowns="120"
+          iteration=""/>
+        <Data
+          id="63"
+          kind="trivial"
+          equation="inertia2.flange_a.phi = inertia2.phi; "
+          dependencies="116"
+          unknowns="111"
+          iteration=""/>
+        <Data
+          id="64"
+          kind="simple scalar"
+          equation="inertia2.flange_a.tau =  -inertia1.flange_b.tau; "
+          dependencies="83"
+          unknowns="112"
+          iteration=""/>
+        <Data
+          id="65"
+          kind="trivial"
+          equation="inertia2.flange_b.phi = inertia2.phi; "
+          dependencies="116"
+          unknowns="113"
+          iteration=""/>
+        <Data
+          id="66"
+          kind="trivial"
+          equation="integrator.u = kinematicPTP.y[1]; "
+          dependencies="126"
+          unknowns="143"
+          iteration=""/>
+        <Data
+          id="67"
+          kind="trivial"
+          equation="loadTorque.flange.phi = inertia2.phi; "
+          dependencies="116"
+          unknowns="150"
+          iteration=""/>
+        <Data
+          id="68"
+          kind="trivial"
+          equation="loadTorque.phi = inertia2.phi; "
+          dependencies="116"
+          unknowns="153"
+          iteration=""/>
+        <Data
+          id="69"
+          kind="simple scalar"
+          equation="loadTorque.w = inertia2.w; "
+          dependencies="118"
+          unknowns="156"
+          iteration=""/>
+        <Data
+          id="70"
+          kind="trivial"
+          equation="spring.a_rel = der(spring.w_rel); "
+          dependencies="100"
+          unknowns="101"
+          iteration=""/>
+        <Data
+          id="71"
+          kind="simple scalar"
+          equation="spring.flange_a.tau =  -inertia1.flange_b.tau; "
+          dependencies="83"
+          unknowns="104"
+          iteration=""/>
+        <Data
+          id="72"
+          kind="trivial"
+          equation="spring.flange_b.phi = inertia2.phi; "
+          dependencies="116"
+          unknowns="105"
+          iteration=""/>
+        <Data
+          id="73"
+          kind="simple scalar"
+          equation="spring.flange_b.tau = inertia1.flange_b.tau; "
+          dependencies="83"
+          unknowns="106"
+          iteration=""/>
+        <Data
+          id="74"
+          kind="trivial"
+          equation="spring.tau = inertia1.flange_b.tau; "
+          dependencies="83"
+          unknowns="102"
+          iteration=""/>
+        <Data
+          id="75"
+          kind="simple scalar"
+          equation="torque.flange.tau =  -PI.y; "
+          dependencies="5"
+          unknowns="91"
+          iteration=""/>
+        <Data
+          id="76"
+          kind="trivial"
+          equation="torque.tau = PI.y; "
+          dependencies="5"
+          unknowns="93"
+          iteration=""/>
+      </EquationBlocks>
+    </Tool>
+  </VendorAnnotations>
+  <ModelVariables>
+    <!-- Index for next variable = 1 -->
+    <ScalarVariable
+      name="time"
+      valueReference="4294967295"
+      causality="independent">
+      <Real
+        unit="s"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 2 -->
+    <ScalarVariable
+      name="driveAngle"
+      valueReference="16777216"
+      description="Reference distance to move"
+      causality="parameter"
+      variability="fixed">
+      <Real
+        quantity="Angle"
+        unit="rad"
+        displayUnit="deg"
+        start="1.570796326794897"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 3 -->
+    <ScalarVariable
+      name="PI.u_s"
+      valueReference="33554437"
+      description="Connector of setpoint input signal">
+      <Real
+        unit="rad/s"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="36"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 4 -->
+    <ScalarVariable
+      name="PI.u_m"
+      valueReference="33554434"
+      description="Connector of measurement input signal">
+      <Real
+        unit="rad/s"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="35"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 5 -->
+    <ScalarVariable
+      name="PI.y"
+      valueReference="637534263"
+      description="Connector of actuator output signal">
+      <Real
+        unit="N.m"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="8"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 6 -->
+    <ScalarVariable
+      name="PI.controlError"
+      valueReference="905969720"
+      description="Control error (set point - measurement)">
+      <Real
+        unit="rad/s"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="24"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 7 -->
+    <ScalarVariable
+      name="PI.controllerType"
+      valueReference="100663296"
+      description="Type of controller"
+      variability="constant">
+      <Enumeration
+        declaredType="Blocks.Types.SimpleController"
+        start="2"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 8 -->
+    <ScalarVariable
+      name="PI.k"
+      valueReference="16777217"
+      description="Gain of controller"
+      causality="parameter"
+      variability="fixed">
+      <Real
+        unit="1"
+        min="0.0"
+        start="100"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 9 -->
+    <ScalarVariable
+      name="PI.Ti"
+      valueReference="16777218"
+      description="Time constant of Integrator block"
+      causality="parameter"
+      variability="fixed">
+      <Real
+        quantity="Time"
+        unit="s"
+        min="1E-60"
+        start="0.1"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 10 -->
+    <ScalarVariable
+      name="PI.Td"
+      valueReference="16777219"
+      description="Time constant of Derivative block"
+      causality="parameter"
+      variability="fixed">
+      <Real
+        quantity="Time"
+        unit="s"
+        min="0.0"
+        start="0.1"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 11 -->
+    <ScalarVariable
+      name="PI.yMax"
+      valueReference="16777220"
+      description="Upper limit of output"
+      causality="parameter"
+      variability="fixed">
+      <Real start="12"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 12 -->
+    <ScalarVariable
+      name="PI.yMin"
+      valueReference="100663297"
+      description="Lower limit of output"
+      variability="fixed">
+      <Real/>
+    </ScalarVariable>
+    <!-- Index for next variable = 13 -->
+    <ScalarVariable
+      name="PI.wp"
+      valueReference="16777221"
+      description="Set-point weight for Proportional block (0..1)"
+      causality="parameter"
+      variability="fixed">
+      <Real min="0.0"
+        start="1"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 14 -->
+    <ScalarVariable
+      name="PI.wd"
+      valueReference="16777222"
+      description="Set-point weight for Derivative block (0..1)"
+      causality="parameter"
+      variability="fixed">
+      <Real min="0.0"
+        start="0"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 15 -->
+    <ScalarVariable
+      name="PI.Ni"
+      valueReference="16777223"
+      description="Ni*Ti is time constant of anti-windup compensation"
+      causality="parameter"
+      variability="fixed">
+      <Real min="1E-13"
+        start="0.1"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 16 -->
+    <ScalarVariable
+      name="PI.Nd"
+      valueReference="16777224"
+      description="The higher Nd, the more ideal the derivative block"
+      causality="parameter"
+      variability="fixed">
+      <Real min="1E-13"
+        start="10"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 17 -->
+    <ScalarVariable
+      name="PI.withFeedForward"
+      valueReference="100663298"
+      description="Use feed-forward input?"
+      variability="constant">
+      <Boolean start="false"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 18 -->
+    <ScalarVariable
+      name="PI.kFF"
+      valueReference="16777225"
+      description="Gain of feed-forward input"
+      causality="parameter"
+      variability="fixed">
+      <Real start="1"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 19 -->
+    <ScalarVariable
+      name="PI.initType"
+      valueReference="100663299"
+      description="Type of initialization (1: no init, 2: steady state, 3: initial state, 4: initial output)"
+      variability="constant">
+      <Enumeration
+        declaredType="Blocks.Types.Init"
+        start="2"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 20 -->
+    <ScalarVariable
+      name="PI.xi_start"
+      valueReference="16777226"
+      description="Initial or guess value for integrator output (= integrator state)"
+      causality="parameter"
+      variability="fixed">
+      <Real start="0"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 21 -->
+    <ScalarVariable
+      name="PI.xd_start"
+      valueReference="16777227"
+      description="Initial or guess value for state of derivative block"
+      causality="parameter"
+      variability="fixed">
+      <Real start="0"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 22 -->
+    <ScalarVariable
+      name="PI.y_start"
+      valueReference="16777228"
+      description="Initial value of output"
+      causality="parameter"
+      variability="fixed">
+      <Real start="0"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 23 -->
+    <ScalarVariable
+      name="PI.homotopyType"
+      valueReference="100663300"
+      description="Simplified model for homotopy-based initialization"
+      variability="constant">
+      <Enumeration
+        declaredType="Blocks.Types.LimiterHomotopy"
+        start="2"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 24 -->
+    <ScalarVariable
+      name="PI.strict"
+      valueReference="100663301"
+      description="= true, if strict limits with noEvent(..)"
+      variability="constant">
+      <Boolean start="false"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 25 -->
+    <ScalarVariable
+      name="PI.addP.u1"
+      valueReference="33554437"
+      description="Connector of Real input signal 1">
+      <Real
+        unit="rad/s"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="31"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 26 -->
+    <ScalarVariable
+      name="PI.addP.u2"
+      valueReference="33554434"
+      description="Connector of Real input signal 2">
+      <Real
+        unit="rad/s"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="32"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 27 -->
+    <ScalarVariable
+      name="PI.addP.y"
+      valueReference="637534265"
+      description="Connector of Real output signal">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="3"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 28 -->
+    <ScalarVariable
+      name="PI.addP.k1"
+      valueReference="100663303"
+      description="Gain of input signal 1"
+      variability="fixed">
+      <Real/>
+    </ScalarVariable>
+    <!-- Index for next variable = 29 -->
+    <ScalarVariable
+      name="PI.addP.k2"
+      valueReference="16777229"
+      description="Gain of input signal 2"
+      causality="parameter"
+      variability="fixed">
+      <Real start="-1"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 30 -->
+    <ScalarVariable
+      name="PI.P.k"
+      valueReference="16777230"
+      description="Gain value multiplied with input signal"
+      causality="parameter"
+      variability="fixed">
+      <Real
+        unit="1"
+        start="1"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 31 -->
+    <ScalarVariable
+      name="PI.P.u"
+      valueReference="637534265"
+      description="Input signal connector">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="3"
+            block="47"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 32 -->
+    <ScalarVariable
+      name="PI.P.y"
+      valueReference="637534266"
+      description="Output signal connector">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="4"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 33 -->
+    <ScalarVariable
+      name="PI.gainPID.k"
+      valueReference="100663304"
+      description="Gain value multiplied with input signal"
+      variability="fixed">
+      <Real
+        unit="1"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 34 -->
+    <ScalarVariable
+      name="PI.gainPID.u"
+      valueReference="637534267"
+      description="Input signal connector">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="5"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 35 -->
+    <ScalarVariable
+      name="PI.gainPID.y"
+      valueReference="637534268"
+      description="Output signal connector">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="6"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 36 -->
+    <ScalarVariable
+      name="PI.addPID.k1"
+      valueReference="16777231"
+      description="Gain of input signal 1"
+      causality="parameter"
+      variability="fixed">
+      <Real start="1"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 37 -->
+    <ScalarVariable
+      name="PI.addPID.k2"
+      valueReference="16777232"
+      description="Gain of input signal 2"
+      causality="parameter"
+      variability="fixed">
+      <Real start="1"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 38 -->
+    <ScalarVariable
+      name="PI.addPID.k3"
+      valueReference="16777233"
+      description="Gain of input signal 3"
+      causality="parameter"
+      variability="fixed">
+      <Real start="1"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 39 -->
+    <ScalarVariable
+      name="PI.addPID.u1"
+      valueReference="637534266"
+      description="Connector of Real input signal 1">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="4"
+            block="51"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 40 -->
+    <ScalarVariable
+      name="PI.addPID.u2"
+      valueReference="234881042"
+      description="Connector of Real input signal 2"
+      variability="fixed">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="33"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 41 -->
+    <ScalarVariable
+      name="PI.addPID.u3"
+      valueReference="33554432"
+      description="Connector of Real input signal 3">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="34"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 42 -->
+    <ScalarVariable
+      name="PI.addPID.y"
+      valueReference="637534267"
+      description="Connector of Real output signal">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="5"
+            block="52"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 43 -->
+    <ScalarVariable
+      name="PI.limiter.uMax"
+      valueReference="100663305"
+      description="Upper limits of input signals"
+      variability="fixed">
+      <Real/>
+    </ScalarVariable>
+    <!-- Index for next variable = 44 -->
+    <ScalarVariable
+      name="PI.limiter.uMin"
+      valueReference="100663306"
+      description="Lower limits of input signals"
+      variability="fixed">
+      <Real/>
+    </ScalarVariable>
+    <!-- Index for next variable = 45 -->
+    <ScalarVariable
+      name="PI.limiter.strict"
+      valueReference="100663307"
+      description="= true, if strict limits with noEvent(..)"
+      variability="constant">
+      <Boolean start="false"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 46 -->
+    <ScalarVariable
+      name="PI.limiter.homotopyType"
+      valueReference="100663308"
+      description="Simplified model for homotopy-based initialization"
+      variability="constant">
+      <Enumeration
+        declaredType="Blocks.Types.LimiterHomotopy"
+        start="2"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 47 -->
+    <ScalarVariable
+      name="PI.limiter.u"
+      valueReference="637534269"
+      description="Connector of Real input signal"
+      initial="approx">
+      <Real start="0"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="7"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 48 -->
+    <ScalarVariable
+      name="PI.limiter.y"
+      valueReference="637534263"
+      description="Connector of Real output signal">
+      <Real
+        unit="N.m"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="8"
+            block="58"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 49 -->
+    <ScalarVariable
+      name="PI.limiter.simplifiedExpr"
+      valueReference="637534269"
+      description="Simplified expression for homotopy-based initialization">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="7"
+            block="57"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 50 -->
+    <ScalarVariable
+      name="PI.Dzero.k"
+      valueReference="16777234"
+      description="Constant output value"
+      causality="parameter"
+      variability="fixed">
+      <Real start="0"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 51 -->
+    <ScalarVariable
+      name="PI.Dzero.y"
+      valueReference="234881042"
+      description="Connector of Real output signal"
+      variability="fixed">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="26"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 52 -->
+    <ScalarVariable
+      name="PI.FFzero.k"
+      valueReference="16777235"
+      description="Constant output value"
+      causality="parameter"
+      variability="fixed">
+      <Real start="0"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 53 -->
+    <ScalarVariable
+      name="PI.FFzero.y"
+      valueReference="234881043"
+      description="Connector of Real output signal"
+      variability="fixed">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="27"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 54 -->
+    <ScalarVariable
+      name="PI.addFF.u1"
+      valueReference="637534268"
+      description="Connector of Real input signal 1">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="6"
+            block="48"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 55 -->
+    <ScalarVariable
+      name="PI.addFF.u2"
+      valueReference="234881043"
+      description="Connector of Real input signal 2"
+      variability="fixed">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="28"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 56 -->
+    <ScalarVariable
+      name="PI.addFF.y"
+      valueReference="637534269"
+      description="Connector of Real output signal">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="7"
+            block="49"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 57 -->
+    <ScalarVariable
+      name="PI.addFF.k1"
+      valueReference="16777236"
+      description="Gain of input signal 1"
+      causality="parameter"
+      variability="fixed">
+      <Real start="1"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 58 -->
+    <ScalarVariable
+      name="PI.addFF.k2"
+      valueReference="100663311"
+      description="Gain of input signal 2"
+      variability="fixed">
+      <Real/>
+    </ScalarVariable>
+    <!-- Index for next variable = 59 -->
+    <ScalarVariable
+      name="PI.I.k"
+      valueReference="100663312"
+      description="Integrator gain"
+      variability="fixed">
+      <Real
+        unit="1"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 60 -->
+    <ScalarVariable
+      name="PI.I.initType"
+      valueReference="100663315"
+      description="Type of initialization (1: no init, 2: steady state, 3,4: initial output)"
+      variability="constant">
+      <Enumeration
+        declaredType="Blocks.Types.Init"
+        start="2"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 61 -->
+    <ScalarVariable
+      name="PI.I.y_start"
+      valueReference="100663316"
+      description="Initial or guess value of output (= state)"
+      variability="fixed">
+      <Real/>
+    </ScalarVariable>
+    <!-- Index for next variable = 62 -->
+    <ScalarVariable
+      name="PI.I.u"
+      valueReference="637534270"
+      description="Connector of Real input signal">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="20"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 63 -->
+    <ScalarVariable
+      name="PI.I.y"
+      valueReference="33554432"
+      description="Connector of Real output signal">
+      <Real/>
+    </ScalarVariable>
+    <!-- Index for next variable = 64 -->
+    <ScalarVariable
+      name="der(PI.I.y)"
+      valueReference="587202560"
+      description="der(Connector of Real output signal)">
+      <Real derivative="63"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="21"
+            plotName="PI.I.der(y)"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 65 -->
+    <ScalarVariable
+      name="PI.addI.k1"
+      valueReference="16777237"
+      description="Gain of input signal 1"
+      causality="parameter"
+      variability="fixed">
+      <Real start="1"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 66 -->
+    <ScalarVariable
+      name="PI.addI.k2"
+      valueReference="16777238"
+      description="Gain of input signal 2"
+      causality="parameter"
+      variability="fixed">
+      <Real start="-1"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 67 -->
+    <ScalarVariable
+      name="PI.addI.k3"
+      valueReference="16777239"
+      description="Gain of input signal 3"
+      causality="parameter"
+      variability="fixed">
+      <Real start="1"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 68 -->
+    <ScalarVariable
+      name="PI.addI.u1"
+      valueReference="33554437"
+      description="Connector of Real input signal 1">
+      <Real
+        unit="rad/s"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="29"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 69 -->
+    <ScalarVariable
+      name="PI.addI.u2"
+      valueReference="33554434"
+      description="Connector of Real input signal 2">
+      <Real
+        unit="rad/s"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="30"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 70 -->
+    <ScalarVariable
+      name="PI.addI.u3"
+      valueReference="637534271"
+      description="Connector of Real input signal 3">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="19"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 71 -->
+    <ScalarVariable
+      name="PI.addI.y"
+      valueReference="637534270"
+      description="Connector of Real output signal">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="20"
+            block="50"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 72 -->
+    <ScalarVariable
+      name="PI.addSat.u1"
+      valueReference="637534263"
+      description="Connector of Real input signal 1">
+      <Real
+        unit="N.m"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="8"
+            block="53"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 73 -->
+    <ScalarVariable
+      name="PI.addSat.u2"
+      valueReference="637534269"
+      description="Connector of Real input signal 2">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="7"
+            block="54"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 74 -->
+    <ScalarVariable
+      name="PI.addSat.y"
+      valueReference="637534272"
+      description="Connector of Real output signal">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="18"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 75 -->
+    <ScalarVariable
+      name="PI.addSat.k1"
+      valueReference="16777240"
+      description="Gain of input signal 1"
+      causality="parameter"
+      variability="fixed">
+      <Real start="1"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 76 -->
+    <ScalarVariable
+      name="PI.addSat.k2"
+      valueReference="16777241"
+      description="Gain of input signal 2"
+      causality="parameter"
+      variability="fixed">
+      <Real start="-1"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 77 -->
+    <ScalarVariable
+      name="PI.gainTrack.k"
+      valueReference="100663319"
+      description="Gain value multiplied with input signal"
+      variability="fixed">
+      <Real
+        unit="1"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 78 -->
+    <ScalarVariable
+      name="PI.gainTrack.u"
+      valueReference="637534272"
+      description="Input signal connector">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="18"
+            block="55"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 79 -->
+    <ScalarVariable
+      name="PI.gainTrack.y"
+      valueReference="637534271"
+      description="Output signal connector">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="19"
+            block="56"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 80 -->
+    <ScalarVariable
+      name="inertia1.flange_a.phi"
+      valueReference="33554433"
+      description="Absolute rotation angle of flange">
+      <Real
+        quantity="Angle"
+        unit="rad"
+        displayUnit="deg"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="38"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 81 -->
+    <ScalarVariable
+      name="inertia1.flange_a.tau"
+      valueReference="637534263"
+      description="Cut torque in the flange">
+      <Real
+        quantity="Torque"
+        unit="N.m"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="8"
+            block="61"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 82 -->
+    <ScalarVariable
+      name="inertia1.flange_b.phi"
+      valueReference="33554433"
+      description="Absolute rotation angle of flange">
+      <Real
+        quantity="Angle"
+        unit="rad"
+        displayUnit="deg"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="39"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 83 -->
+    <ScalarVariable
+      name="inertia1.flange_b.tau"
+      valueReference="637534273"
+      description="Cut torque in the flange">
+      <Real
+        quantity="Torque"
+        unit="N.m"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="11"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 84 -->
+    <ScalarVariable
+      name="inertia1.J"
+      valueReference="16777242"
+      description="Moment of inertia"
+      causality="parameter"
+      variability="fixed">
+      <Real
+        quantity="MomentOfInertia"
+        unit="kg.m2"
+        min="0.0"
+        start="1"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 85 -->
+    <ScalarVariable
+      name="inertia1.phi"
+      valueReference="33554433"
+      description="Absolute rotation angle of component"
+      initial="exact">
+      <Real
+        quantity="Angle"
+        unit="rad"
+        displayUnit="deg"
+        start="0"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 86 -->
+    <ScalarVariable
+      name="der(inertia1.phi)"
+      valueReference="587202561"
+      description="der(Absolute rotation angle of component)">
+      <Real
+        unit="rad/s"
+        derivative="85"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="17"
+            plotName="inertia1.der(phi)"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 87 -->
+    <ScalarVariable
+      name="inertia1.w"
+      valueReference="33554434"
+      description="Absolute angular velocity of component (= der(phi))">
+      <Real
+        quantity="AngularVelocity"
+        unit="rad/s"
+        derivative="85"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 88 -->
+    <ScalarVariable
+      name="der(inertia1.w)"
+      valueReference="587202562"
+      description="der(Absolute angular velocity of component (= der(phi)))">
+      <Real
+        unit="rad/s2"
+        derivative="87"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="13"
+            plotName="inertia1.der(w)"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 89 -->
+    <ScalarVariable
+      name="inertia1.a"
+      valueReference="637534274"
+      description="Absolute angular acceleration of component (= der(w))"
+      initial="exact">
+      <Real
+        quantity="AngularAcceleration"
+        unit="rad/s2"
+        start="0"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="12"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 90 -->
+    <ScalarVariable
+      name="torque.flange.phi"
+      valueReference="33554433"
+      description="Absolute rotation angle of flange">
+      <Real
+        quantity="Angle"
+        unit="rad"
+        displayUnit="deg"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="46"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 91 -->
+    <ScalarVariable
+      name="torque.flange.tau"
+      valueReference="0"
+      description="Cut torque in the flange">
+      <Real
+        quantity="Torque"
+        unit="N.m"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockNegativeAliasTo="8"
+            block="75"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 92 -->
+    <ScalarVariable
+      name="torque.phi_support"
+      valueReference="100663322"
+      description="Absolute angle of support flange"
+      variability="constant">
+      <Real
+        quantity="Angle"
+        unit="rad"
+        displayUnit="deg"
+        start="0"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 93 -->
+    <ScalarVariable
+      name="torque.tau"
+      valueReference="637534263"
+      description="Accelerating torque acting at flange (= -flange.tau)">
+      <Real
+        unit="N.m"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="8"
+            block="76"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 94 -->
+    <ScalarVariable
+      name="spring.c"
+      valueReference="16777243"
+      description="Spring constant"
+      causality="parameter"
+      variability="fixed">
+      <Real
+        quantity="RotationalSpringConstant"
+        unit="N.m/rad"
+        min="0.0"
+        start="10000.0"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 95 -->
+    <ScalarVariable
+      name="spring.d"
+      valueReference="16777244"
+      description="Damping constant"
+      causality="parameter"
+      variability="fixed">
+      <Real
+        quantity="RotationalDampingConstant"
+        unit="N.m.s/rad"
+        min="0.0"
+        start="100"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 96 -->
+    <ScalarVariable
+      name="spring.phi_rel0"
+      valueReference="16777245"
+      description="Unstretched spring angle"
+      causality="parameter"
+      variability="fixed">
+      <Real
+        quantity="Angle"
+        unit="rad"
+        displayUnit="deg"
+        start="0"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 97 -->
+    <ScalarVariable
+      name="spring.phi_rel"
+      valueReference="33554435"
+      description="Relative rotation angle (= flange_b.phi - flange_a.phi)">
+      <Real
+        quantity="Angle"
+        unit="rad"
+        displayUnit="deg"
+        nominal="0.0001"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 98 -->
+    <ScalarVariable
+      name="der(spring.phi_rel)"
+      valueReference="587202563"
+      description="der(Relative rotation angle (= flange_b.phi - flange_a.phi))">
+      <Real
+        unit="rad/s"
+        derivative="97"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="16"
+            plotName="spring.der(phi_rel)"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 99 -->
+    <ScalarVariable
+      name="spring.w_rel"
+      valueReference="33554436"
+      description="Relative angular velocity (= der(phi_rel))"
+      initial="exact">
+      <Real
+        quantity="AngularVelocity"
+        unit="rad/s"
+        start="0"
+        derivative="97"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 100 -->
+    <ScalarVariable
+      name="der(spring.w_rel)"
+      valueReference="587202564"
+      description="der(Relative angular velocity (= der(phi_rel)))">
+      <Real
+        unit="rad/s2"
+        derivative="99"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="15"
+            plotName="spring.der(w_rel)"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 101 -->
+    <ScalarVariable
+      name="spring.a_rel"
+      valueReference="587202564"
+      description="Relative angular acceleration (= der(w_rel))">
+      <Real
+        quantity="AngularAcceleration"
+        unit="rad/s2"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="15"
+            block="70"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 102 -->
+    <ScalarVariable
+      name="spring.tau"
+      valueReference="637534273"
+      description="Torque between flanges (= flange_b.tau)">
+      <Real
+        quantity="Torque"
+        unit="N.m"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="11"
+            block="74"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 103 -->
+    <ScalarVariable
+      name="spring.flange_a.phi"
+      valueReference="33554433"
+      description="Absolute rotation angle of flange">
+      <Real
+        quantity="Angle"
+        unit="rad"
+        displayUnit="deg"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="45"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 104 -->
+    <ScalarVariable
+      name="spring.flange_a.tau"
+      valueReference="0"
+      description="Cut torque in the flange">
+      <Real
+        quantity="Torque"
+        unit="N.m"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockNegativeAliasTo="11"
+            block="71"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 105 -->
+    <ScalarVariable
+      name="spring.flange_b.phi"
+      valueReference="905969734"
+      description="Absolute rotation angle of flange">
+      <Real
+        quantity="Angle"
+        unit="rad"
+        displayUnit="deg"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="22"
+            block="72"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 106 -->
+    <ScalarVariable
+      name="spring.flange_b.tau"
+      valueReference="637534273"
+      description="Cut torque in the flange">
+      <Real
+        quantity="Torque"
+        unit="N.m"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="11"
+            block="73"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 107 -->
+    <ScalarVariable
+      name="spring.phi_nominal"
+      valueReference="100663323"
+      description="Nominal value of phi_rel (used for scaling)"
+      variability="constant">
+      <Real
+        quantity="Angle"
+        unit="rad"
+        displayUnit="rad"
+        min="0.0"
+        start="0.0001"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 108 -->
+    <ScalarVariable
+      name="spring.lossPower"
+      valueReference="905969731"
+      description="Loss power leaving component via heatPort (&gt; 0, if heat is flowing out of component)">
+      <Real
+        quantity="Power"
+        unit="W"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="25"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 109 -->
+    <ScalarVariable
+      name="spring.tau_c"
+      valueReference="637534276"
+      description="Spring torque">
+      <Real
+        quantity="Torque"
+        unit="N.m"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="9"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 110 -->
+    <ScalarVariable
+      name="spring.tau_d"
+      valueReference="637534277"
+      description="Damping torque">
+      <Real
+        quantity="Torque"
+        unit="N.m"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="10"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 111 -->
+    <ScalarVariable
+      name="inertia2.flange_a.phi"
+      valueReference="905969734"
+      description="Absolute rotation angle of flange">
+      <Real
+        quantity="Angle"
+        unit="rad"
+        displayUnit="deg"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="22"
+            block="63"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 112 -->
+    <ScalarVariable
+      name="inertia2.flange_a.tau"
+      valueReference="0"
+      description="Cut torque in the flange">
+      <Real
+        quantity="Torque"
+        unit="N.m"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockNegativeAliasTo="11"
+            block="64"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 113 -->
+    <ScalarVariable
+      name="inertia2.flange_b.phi"
+      valueReference="905969734"
+      description="Absolute rotation angle of flange">
+      <Real
+        quantity="Angle"
+        unit="rad"
+        displayUnit="deg"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="22"
+            block="65"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 114 -->
+    <ScalarVariable
+      name="inertia2.flange_b.tau"
+      valueReference="234881060"
+      description="Cut torque in the flange"
+      variability="fixed">
+      <Real
+        quantity="Torque"
+        unit="N.m"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="40"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 115 -->
+    <ScalarVariable
+      name="inertia2.J"
+      valueReference="16777246"
+      description="Moment of inertia"
+      causality="parameter"
+      variability="fixed">
+      <Real
+        quantity="MomentOfInertia"
+        unit="kg.m2"
+        min="0.0"
+        start="2"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 116 -->
+    <ScalarVariable
+      name="inertia2.phi"
+      valueReference="905969734"
+      description="Absolute rotation angle of component">
+      <Real
+        quantity="Angle"
+        unit="rad"
+        displayUnit="deg"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="22"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 117 -->
+    <ScalarVariable
+      name="der(inertia2.phi)"
+      valueReference="905969735"
+      description="der(Absolute rotation angle of component)">
+      <Real
+        unit="rad/s"
+        derivative="116"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="23"
+            block="59"
+            plotName="inertia2.der(phi)"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 118 -->
+    <ScalarVariable
+      name="inertia2.w"
+      valueReference="905969735"
+      description="Absolute angular velocity of component (= der(phi))">
+      <Real
+        quantity="AngularVelocity"
+        unit="rad/s"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="23"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 119 -->
+    <ScalarVariable
+      name="der(inertia2.w)"
+      valueReference="637534280"
+      description="der(Absolute angular velocity of component (= der(phi)))">
+      <Real
+        unit="rad/s2"
+        derivative="118"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="14"
+            plotName="inertia2.der(w)"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 120 -->
+    <ScalarVariable
+      name="inertia2.a"
+      valueReference="637534280"
+      description="Absolute angular acceleration of component (= der(w))">
+      <Real
+        quantity="AngularAcceleration"
+        unit="rad/s2"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="14"
+            block="62"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 121 -->
+    <ScalarVariable
+      name="kinematicPTP.deltaq[1]"
+      valueReference="100663327"
+      description="Distance to move"
+      variability="fixed">
+      <Real
+        unit="rad"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 122 -->
+    <ScalarVariable
+      name="kinematicPTP.qd_max[1]"
+      valueReference="16777247"
+      description="Maximum velocities der(q)"
+      causality="parameter"
+      variability="fixed">
+      <Real min="1E-60"
+        start="1"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 123 -->
+    <ScalarVariable
+      name="kinematicPTP.qdd_max[1]"
+      valueReference="16777248"
+      description="Maximum accelerations der(qd)"
+      causality="parameter"
+      variability="fixed">
+      <Real min="1E-60"
+        start="1"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 124 -->
+    <ScalarVariable
+      name="kinematicPTP.startTime"
+      valueReference="16777249"
+      description="Time instant at which movement starts"
+      causality="parameter"
+      variability="fixed">
+      <Real
+        quantity="Time"
+        unit="s"
+        start="0.5"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 125 -->
+    <ScalarVariable
+      name="kinematicPTP.nout"
+      valueReference="100663328"
+      description="Number of outputs"
+      variability="constant">
+      <Integer min="1"
+        start="1"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 126 -->
+    <ScalarVariable
+      name="kinematicPTP.y[1]"
+      valueReference="637534261"
+      description="Connector of Real output signals"
+      variability="discrete">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="1"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 127 -->
+    <ScalarVariable
+      name="kinematicPTP.p_deltaq[1]"
+      valueReference="100663329"
+      variability="fixed">
+      <Real
+        unit="rad"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 128 -->
+    <ScalarVariable
+      name="kinematicPTP.p_qd_max[1]"
+      valueReference="100663330"
+      variability="fixed">
+      <Real/>
+    </ScalarVariable>
+    <!-- Index for next variable = 129 -->
+    <ScalarVariable
+      name="kinematicPTP.p_qdd_max[1]"
+      valueReference="100663331"
+      variability="fixed">
+      <Real/>
+    </ScalarVariable>
+    <!-- Index for next variable = 130 -->
+    <ScalarVariable
+      name="kinematicPTP.sd_max"
+      valueReference="100663332"
+      variability="fixed">
+      <Real/>
+    </ScalarVariable>
+    <!-- Index for next variable = 131 -->
+    <ScalarVariable
+      name="kinematicPTP.sdd_max"
+      valueReference="100663333"
+      variability="fixed">
+      <Real/>
+    </ScalarVariable>
+    <!-- Index for next variable = 132 -->
+    <ScalarVariable
+      name="kinematicPTP.sdd"
+      valueReference="637534262"
+      variability="discrete">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="0"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 133 -->
+    <ScalarVariable
+      name="kinematicPTP.aux1[1]"
+      valueReference="100663334"
+      variability="fixed">
+      <Real/>
+    </ScalarVariable>
+    <!-- Index for next variable = 134 -->
+    <ScalarVariable
+      name="kinematicPTP.aux2[1]"
+      valueReference="100663335"
+      variability="fixed">
+      <Real/>
+    </ScalarVariable>
+    <!-- Index for next variable = 135 -->
+    <ScalarVariable
+      name="kinematicPTP.Ta1"
+      valueReference="100663336"
+      variability="fixed">
+      <Real
+        quantity="Time"
+        unit="s"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 136 -->
+    <ScalarVariable
+      name="kinematicPTP.Ta2"
+      valueReference="100663337"
+      variability="fixed">
+      <Real
+        quantity="Time"
+        unit="s"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 137 -->
+    <ScalarVariable
+      name="kinematicPTP.Tv"
+      valueReference="100663338"
+      variability="fixed">
+      <Real
+        quantity="Time"
+        unit="s"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 138 -->
+    <ScalarVariable
+      name="kinematicPTP.Te"
+      valueReference="100663339"
+      variability="fixed">
+      <Real
+        quantity="Time"
+        unit="s"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 139 -->
+    <ScalarVariable
+      name="kinematicPTP.noWphase"
+      valueReference="100663340"
+      variability="fixed">
+      <Boolean/>
+    </ScalarVariable>
+    <!-- Index for next variable = 140 -->
+    <ScalarVariable
+      name="integrator.k"
+      valueReference="16777250"
+      description="Integrator gain"
+      causality="parameter"
+      variability="fixed">
+      <Real
+        unit="1"
+        start="1"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 141 -->
+    <ScalarVariable
+      name="integrator.initType"
+      valueReference="100663343"
+      description="Type of initialization (1: no init, 2: steady state, 3,4: initial output)"
+      variability="constant">
+      <Enumeration
+        declaredType="Blocks.Types.Init"
+        start="3"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 142 -->
+    <ScalarVariable
+      name="integrator.y_start"
+      valueReference="16777251"
+      description="Initial or guess value of output (= state)"
+      causality="parameter"
+      variability="fixed">
+      <Real
+        unit="rad/s"
+        start="0"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 143 -->
+    <ScalarVariable
+      name="integrator.u"
+      valueReference="637534261"
+      description="Connector of Real input signal"
+      variability="discrete">
+      <Real/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="1"
+            block="66"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 144 -->
+    <ScalarVariable
+      name="integrator.y"
+      valueReference="33554437"
+      description="Connector of Real output signal">
+      <Real
+        unit="rad/s"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 145 -->
+    <ScalarVariable
+      name="der(integrator.y)"
+      valueReference="587202565"
+      description="der(Connector of Real output signal)">
+      <Real
+        unit="rad/s2"
+        derivative="144"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="2"
+            plotName="integrator.der(y)"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 146 -->
+    <ScalarVariable
+      name="speedSensor.flange.phi"
+      valueReference="33554433"
+      description="Absolute rotation angle of flange">
+      <Real
+        quantity="Angle"
+        unit="rad"
+        displayUnit="deg"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="43"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 147 -->
+    <ScalarVariable
+      name="der(speedSensor.flange.phi)"
+      valueReference="33554434"
+      description="der(Absolute rotation angle of flange)">
+      <Real
+        unit="rad/s"
+        derivative="146"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="37"
+            plotName="speedSensor.flange.der(phi)"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 148 -->
+    <ScalarVariable
+      name="speedSensor.flange.tau"
+      valueReference="100663346"
+      description="Cut torque in the flange"
+      variability="constant">
+      <Real
+        quantity="Torque"
+        unit="N.m"
+        start="0"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 149 -->
+    <ScalarVariable
+      name="speedSensor.w"
+      valueReference="33554434"
+      description="Absolute angular velocity of flange as output signal">
+      <Real
+        unit="rad/s"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="44"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 150 -->
+    <ScalarVariable
+      name="loadTorque.flange.phi"
+      valueReference="905969734"
+      description="Absolute rotation angle of flange">
+      <Real
+        quantity="Angle"
+        unit="rad"
+        displayUnit="deg"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="22"
+            block="67"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 151 -->
+    <ScalarVariable
+      name="loadTorque.flange.tau"
+      valueReference="0"
+      description="Cut torque in the flange">
+      <Real
+        quantity="Torque"
+        unit="N.m"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="41"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 152 -->
+    <ScalarVariable
+      name="loadTorque.phi_support"
+      valueReference="100663348"
+      description="Absolute angle of support flange"
+      variability="constant">
+      <Real
+        quantity="Angle"
+        unit="rad"
+        displayUnit="deg"
+        start="0"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 153 -->
+    <ScalarVariable
+      name="loadTorque.phi"
+      valueReference="905969734"
+      description="Angle of flange with respect to support (= flange.phi - support.phi)">
+      <Real
+        quantity="Angle"
+        unit="rad"
+        displayUnit="deg"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="22"
+            block="68"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 154 -->
+    <ScalarVariable
+      name="der(loadTorque.phi)"
+      valueReference="905969735"
+      description="der(Angle of flange with respect to support (= flange.phi - support.phi))">
+      <Real
+        unit="rad/s"
+        derivative="153"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="23"
+            block="60"
+            plotName="loadTorque.der(phi)"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 155 -->
+    <ScalarVariable
+      name="loadTorque.tau_constant"
+      valueReference="16777252"
+      description="Constant torque (if negative, torque is acting as load in positive direction of rotation)"
+      causality="parameter"
+      variability="fixed">
+      <Real
+        quantity="Torque"
+        unit="N.m"
+        start="10"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 156 -->
+    <ScalarVariable
+      name="loadTorque.w"
+      valueReference="905969735"
+      description="Angular velocity of flange with respect to support (= der(phi))">
+      <Real
+        quantity="AngularVelocity"
+        unit="rad/s"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            blockAliasTo="23"
+            block="69"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 157 -->
+    <ScalarVariable
+      name="loadTorque.tau"
+      valueReference="234881060"
+      description="Accelerating torque acting at flange (= -flange.tau)"
+      variability="fixed">
+      <Real
+        quantity="Torque"
+        unit="N.m"/>
+      <Annotations>
+        <Tool
+          name="Dymola">
+          <Data
+            block="42"/>
+        </Tool>
+      </Annotations>
+    </ScalarVariable>
+    <!-- Index for next variable = 158 -->
+    <ScalarVariable
+      name="CPUtime"
+      valueReference="67108864"
+      causality="output">
+      <Real
+        unit="s"/>
+    </ScalarVariable>
+    <!-- Index for next variable = 159 -->
+    <ScalarVariable
+      name="EventCounter"
+      valueReference="67108865"
+      causality="output">
+      <Real/>
+    </ScalarVariable>
+  </ModelVariables>
+  <ModelStructure>
+    <Outputs>
+      <Unknown index="158"/>
+      <Unknown index="159"/>
+    </Outputs>
+    <Derivatives>
+      <Unknown index="64"/>
+      <Unknown index="86"/>
+      <Unknown index="88"/>
+      <Unknown index="98"/>
+      <Unknown index="100"/>
+      <Unknown index="145"/>
+    </Derivatives>
+    <InitialUnknowns>
+      <Unknown index="63"/>
+      <Unknown index="64"/>
+      <Unknown index="86"/>
+      <Unknown index="87"/>
+      <Unknown index="88"/>
+      <Unknown index="97"/>
+      <Unknown index="98"/>
+      <Unknown index="100"/>
+      <Unknown index="144"/>
+      <Unknown index="145"/>
+      <Unknown index="158"/>
+      <Unknown index="159"/>
+    </InitialUnknowns>
+  </ModelStructure>
+</fmiModelDescription>

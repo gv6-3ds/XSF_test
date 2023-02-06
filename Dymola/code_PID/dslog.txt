@@ -1,0 +1,6 @@
+Log-file of program .\dymosim.exe
+(generated: Mon Feb  6 14:30:47 2023)
+
+dymosim.exe started
+... "Blocks.Examples.PID_Controller"
+... "dsin.txt" creating (dymosim input file).
