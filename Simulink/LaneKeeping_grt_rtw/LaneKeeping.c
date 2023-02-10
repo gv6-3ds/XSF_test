@@ -79,7 +79,7 @@ void LaneKeeping_step(void)
   int32_T sens;
 
   /* Clock: '<Root>/Clock' */
-  // Covereged Requirements : #Block_MATLAB_FUNCTION_003
+  // Covered Requirements : #Block_MATLAB_FUNCTION_003
   rtb_Clock = LaneKeeping_M->Timing.t[0];
 
   /* RelationalOperator: '<S1>/Compare' incorporates:
