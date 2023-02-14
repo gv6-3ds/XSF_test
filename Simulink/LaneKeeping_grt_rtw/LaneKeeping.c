@@ -69,7 +69,7 @@ real_T rt_remd_snf(real_T u0, real_T u1)
 
 /* Model step function */
 void LaneKeeping_step(void)
-// Covered Requirements : #Block_ABS_001, #Block_CAT_002
+//Covered Requirements : #Block_ABS_001, #Block_CAT_002//
 {
   real_T NumCreneau;
   real_T PosDansCreneau;
@@ -79,7 +79,7 @@ void LaneKeeping_step(void)
   int32_T sens;
 
   /* Clock: '<Root>/Clock' */
-  // Covered Requirements : #Block_MATLAB_FUNCTION_003
+  //Covered Requirements : #Block_MATLAB_FUNCTION_003//
   rtb_Clock = LaneKeeping_M->Timing.t[0];
 
   /* RelationalOperator: '<S1>/Compare' incorporates:
@@ -225,7 +225,7 @@ void LaneKeeping_step(void)
 
 /* Model initialize function */
 void LaneKeeping_initialize(void)
-// Covered Requirements : #Input_1, #Input_2
+//Covered Requirements : #Input_1, #Input_2//
 {
   /* Registration code */
 
